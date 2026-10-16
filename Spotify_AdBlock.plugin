@@ -1,0 +1,28 @@
+#!name = Spotify 去广告
+#!desc = 屏蔽 Spotify 免费版的音频/横幅广告接口（ad-*、pendragon、aet.spotify.com 等），需在 Loon 中开启 HTTPS 解密（MitM）并信任根证书。仅含广告拦截，不含任何会员/付费功能解锁。
+#!author = Doubao（参考 fmz200/wool_scripts、001ProMax/Surge、Amlabort/MY_clash 方案）
+#!homepage = 
+#!icon = 
+#!system = iOS, iPadOS, macOS
+#!system_version = 
+#!loon_version = 
+#!tag = 去广告, Spotify
+#!date = 2026-10-17
+
+[Rule]
+# 阻断 Spotify 的 QUIC/HTTP3 流量，强制回落 HTTPS，MitM 才能解密（不解密则下方 Rewrite 全部失效）
+AND,((DOMAIN-SUFFIX, spotify.com), (PROTOCOL, QUIC)),REJECT
+# 广告统计/埋点域名
+DOMAIN, aet.spotify.com, REJECT
+
+[Rewrite]
+# 核心规则：拦截 ad- 开头的广告下发接口与 pendragon（广告推送），返回 200 空响应，客户端无广告可播即跳过
+^https:\/\/(?:\w+-spclient|spclient\.wg)\.spotify\.com(?::443)?\/(?:ad-|pendragon) mock-response-body data-type=text data="" status-code=200
+# 备用广告接口（老版本客户端也会请求）
+^https:\/\/gae2-spclient\.spotify\.com:443\/ad reject
+# 可选：屏蔽设置页里的“升级会员/推广”展示入口（仅影响界面展示，不影响账号状态），需要时取消下面一行的 # 注释
+# ^https:\/\/.*-spclient\.spotify\.com(?::443)?\/pam-view-service\/ reject
+
+[Mitm]
+# 需要解密的域名（在 Loon 中开启“HTTPS 解密”后生效）
+hostname = spclient.wg.spotify.com, *-spclient.spotify.com
