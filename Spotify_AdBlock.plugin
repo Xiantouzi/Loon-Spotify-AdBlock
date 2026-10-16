@@ -2,7 +2,7 @@
 #!desc = 屏蔽 Spotify 免费版的音频/横幅广告接口（ad-*、pendragon、aet.spotify.com 等），需在 Loon 中开启 HTTPS 解密（MitM）并信任根证书。仅含广告拦截，不含任何会员/付费功能解锁。
 #!author = Doubao（参考 fmz200/wool_scripts、001ProMax/Surge、Amlabort/MY_clash 方案）
 #!homepage = 
-#!icon = 
+#!icon = https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Spotify.png
 #!system = iOS, iPadOS, macOS
 #!system_version = 
 #!loon_version = 
